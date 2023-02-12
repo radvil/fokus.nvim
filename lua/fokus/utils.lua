@@ -10,28 +10,41 @@ function M.notify(message, lvl)
 end
 
 ---Init depenendencies
----@return nil | table<{ zenmode: any, twilight: any }>
-function M.get_required_modules()
-  local _zmode, zmode = pcall(require, "zen-mode")
-  local _twilight, twilight = pcall(require, "twilight")
+---@return nil | boolean
+function M.has_required_deps()
+  local _zmode, _ = pcall(require, "zen-mode")
+  local _twilight, _ = pcall(require, "twilight")
   if not _zmode or not _twilight then
-    return nil
+    return false
+  else
+    return true
   end
-  return { twilight, zmode }
+end
+
+---merge default opts with user provided config
+---@param defaults FokusOptions
+---@param changes FokusOptions | nil
+---@return any
+function M.merge_options(defaults, changes)
+  changes = changes or {}
+  if changes and type(changes.view) == "table" then
+    defaults.view = vim.tbl_deep_extend("force", defaults.view, changes.view)
+  end
+  return vim.tbl_deep_extend("force", defaults, changes)
 end
 
 ---find first index of value given
 ---@param tbl table
----@param value string | boolean | number
----@return number | boolean
-function M.find_findex(tbl, value)
+---@return boolean
+function M.buffer_excluded(tbl)
   if type(tbl) ~= "table" then
     error("table expected, got " .. type(tbl), 2)
   end
   local ret = false
-  for i, v in pairs(tbl) do
-    if value == v then
-      ret = i
+  for _, v in pairs(tbl) do
+    if vim.bo.ft == v then
+      ret = true
+      break
     end
   end
   return ret

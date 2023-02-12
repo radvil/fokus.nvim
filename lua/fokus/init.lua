@@ -1,7 +1,7 @@
-local config = require("fokus.config")
+---@class FokusNvim
 local M = {}
 
-M.fokus_active = config.fokus_enabled
-M.setup = config.setup
+M.is_activated = require("fokus.view").is_fokus_active
+M.setup = require("fokus.config").setup
 
 return M
