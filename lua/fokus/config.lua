@@ -21,7 +21,7 @@ M.options = {}
 M.fokus_enabled = false
 
 function M.fokus_enter()
-  if not utils.find_findex(M.options.exclude_filetypes, vim.bo.ft) then
+  if not not utils.find_findex(M.options.exclude_filetypes, vim.bo.ft) then
     return
   end
   vim.cmd("TwilightEnable")
@@ -35,7 +35,7 @@ function M.fokus_enter()
 end
 
 function M.fokus_leave()
-  if not utils.find_findex(M.options.exclude_filetypes, vim.bo.ft) then
+  if not not utils.find_findex(M.options.exclude_filetypes, vim.bo.ft) then
     return
   end
   vim.cmd("TwilightDisable")
