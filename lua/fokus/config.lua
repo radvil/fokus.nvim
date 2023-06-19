@@ -1,15 +1,18 @@
 local M = {}
 
 ---@class FokusOptions
-M.options = {
-  ---@class FokusViewOptions
-  view = {
-    notify_status_change = false,
-    blacklists_filetypes = {},
+local defaults = {
+  exclude_filetypes = {},
+  ---@class FokusHookOptions
+  hooks = {
     ---@type function | nil
-    on_fokus_leave = nil,
+    post_enable = nil,
     ---@type function | nil
-    on_fokus_enter = nil,
+    post_disable = nil,
+    ---@type function | nil
+    post_enter = nil,
+    ---@type function | nil
+    post_leave = nil,
   },
 }
 
@@ -18,8 +21,8 @@ M.loaded = false
 
 ---@param opts FokusOptions | nil
 function M.setup(opts)
-  M.options = require("fokus.utils").merge_options(M.options, opts)
-  require("fokus.view").setup(M.options.view)
+  opts = vim.tbl_deep_extend("force", defaults, opts or {})
+  require("fokus.view").setup(opts)
   M.loaded = true
 end
 

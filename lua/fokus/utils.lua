@@ -1,12 +1,11 @@
 local M = {}
 
-function M.notify(message, lvl)
-  local status, notify_nvim = pcall(require, "notify.nvim")
-  if status then
-    vim.notify = notify_nvim
-  end
-  lvl = lvl == nil and vim.log.levels.INFO or lvl
-  vim.notify(message, lvl)
+---@param msg string
+---@param level? number
+function M.notify(msg, level)
+  vim.notify(msg, level or vim.log.levels.INFO, {
+    title = "Fokus",
+  })
 end
 
 ---Init depenendencies
@@ -19,18 +18,6 @@ function M.has_required_deps()
   else
     return true
   end
-end
-
----merge default opts with user provided config
----@param defaults FokusOptions
----@param changes FokusOptions | nil
----@return any
-function M.merge_options(defaults, changes)
-  changes = changes or {}
-  if changes and type(changes.view) == "table" then
-    defaults.view = vim.tbl_deep_extend("force", defaults.view, changes.view)
-  end
-  return vim.tbl_deep_extend("force", defaults, changes)
 end
 
 ---find first index of value given
