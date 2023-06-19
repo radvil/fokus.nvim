@@ -97,8 +97,6 @@ function M.toggle()
   M.is_enabled = not M.is_enabled
   local status = M.is_enabled and "enabled" or "disabled"
   local log_lvl = M.is_enabled and vim.log.levels.INFO or vim.log.levels.WARN
-  local next = M.is_enabled and "disable" or "enable"
-  twilight_view[next]()
   utils.notify("Fokus » " .. status, log_lvl)
 end
 
