@@ -1,9 +1,11 @@
 local M = {}
 local utils = require("fokus.utils")
 
+M.is_enabled = true
+
 ---twilight.view module
 ---@type nil | any
-local view = nil
+local twilight_view = nil
 
 ---@type FokusViewOptions
 local view_opts = {}
@@ -65,23 +67,39 @@ end
 
 ---@return boolean
 function M.is_fokus_active()
-  return view.enabled
+  return twilight_view.enabled
 end
 
 ---enable twilight view
-function M.enable()
-  if not is_blacklisted() then
-    view.enable()
+function M.enter()
+  if not is_blacklisted() and M.is_enabled then
+    twilight_view.enable()
     post_enter()
   end
 end
 
 ---disable twilight view
-function M.disable()
-  if not is_blacklisted() then
-    view.disable()
+function M.leave()
+  if not is_blacklisted() and M.is_enabled then
+    twilight_view.disable()
     post_leave()
   end
+end
+
+local function register_toggle()
+  vim.api.nvim_create_user_command("FokusToggle", M.toggle, {
+    desc = "Fokus » Toggle (enable/disable)",
+  })
+end
+
+-- toggle enable
+function M.toggle()
+  M.is_enabled = not M.is_enabled
+  local status = M.is_enabled and "enabled" or "disabled"
+  local log_lvl = M.is_enabled and vim.log.levels.INFO or vim.log.levels.WARN
+  local next = M.is_enabled and "disable" or "enable"
+  twilight_view[next]()
+  utils.notify("Fokus » " .. status, log_lvl)
 end
 
 ---setup twilight view
@@ -89,9 +107,10 @@ end
 function M.setup(options)
   view_opts = options or {}
   ensture_deps_installed()
-  view = require("twilight.view")
-  on_fokus("InsertEnter", M.enable)
-  on_fokus("InsertLeave", M.disable)
+  twilight_view = require("twilight.view")
+  on_fokus("InsertEnter", M.enter)
+  on_fokus("InsertLeave", M.leave)
+  register_toggle()
 end
 
 -- TODO: better to restructure view options based on the originals ?
