@@ -4,7 +4,7 @@ local M = {}
 ---@param level? number
 function M.notify(msg, level)
   vim.notify(msg, level or vim.log.levels.INFO, {
-    title = "Fokus",
+    title = "fokus.nvim",
   })
 end
 

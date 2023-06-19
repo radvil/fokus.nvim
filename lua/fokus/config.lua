@@ -2,6 +2,9 @@ local M = {}
 
 ---@class FokusOptions
 local defaults = {
+  notify = {
+    enabled = true,
+  },
   exclude_filetypes = {},
   ---@class FokusHookOptions
   hooks = {
@@ -9,10 +12,6 @@ local defaults = {
     post_enable = nil,
     ---@type function | nil
     post_disable = nil,
-    ---@type function | nil
-    post_enter = nil,
-    ---@type function | nil
-    post_leave = nil,
   },
 }
 
@@ -21,7 +20,7 @@ M.loaded = false
 
 ---@param opts FokusOptions | nil
 function M.setup(opts)
-  opts = vim.tbl_deep_extend("force", defaults, opts or {})
+  opts = vim.tbl_extend("force", defaults, opts or {})
   require("fokus.view").setup(opts)
   M.loaded = true
 end
