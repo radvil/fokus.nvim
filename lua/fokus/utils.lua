@@ -11,9 +11,8 @@ end
 ---Init depenendencies
 ---@return nil | boolean
 function M.has_required_deps()
-  local _zmode, _ = pcall(require, "zen-mode")
   local _twilight, _ = pcall(require, "twilight")
-  if not _zmode or not _twilight then
+  if not _twilight then
     return false
   else
     return true
