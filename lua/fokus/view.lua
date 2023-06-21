@@ -76,7 +76,8 @@ local function register_toggle()
 end
 
 -- toggle enable
-function M.toggle()
+---@param notify boolean
+function M.toggle(notify)
   state.is_enabled = not state.is_enabled
   if state.opts.hooks then
     local next = state.is_enabled and "post_enable" or "post_disable"
@@ -84,7 +85,7 @@ function M.toggle()
       state.opts.hooks[next]()
     end
   end
-  if state.opts.notify.enabled then
+  if state.opts.notify.enabled and notify then
     local msg = state.is_enabled and "😎 Enabled" or "👀 Disabled"
     local level = state.is_enabled and vim.log.levels.INFO or vim.log.levels.WARN
     utils.notify(msg, level)
